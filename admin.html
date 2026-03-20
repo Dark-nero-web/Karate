@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-width=1.0">
+  <title>Admin Dashboard - Karate Academy</title>
+  <link rel="stylesheet" href="index.css">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    nav {
+      background-color: #111;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 2px solid rgb(238, 136, 3);
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: rgb(238, 136, 3);
+    }
+
+    .admin-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(20, 20, 20, 0.8);
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+
+    h1 {
+      color: rgb(238, 136, 3);
+      text-align: center;
+    }
+
+    .stats-cards {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #222;
+      padding: 20px 40px;
+      border-radius: 8px;
+      text-align: center;
+      border-bottom: 3px solid rgb(238, 136, 3);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 36px;
+      color: #fff;
+    }
+
+    .card p {
+      margin: 5px 0 0;
+      color: #888;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #444;
+    }
+
+    th {
+      background-color: rgb(238, 136, 3);
+      color: #000;
+    }
+
+    tr:hover {
+      background-color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="profile.html">PROFILE</a>
+    <a href="admin.html" style="color:rgb(238,136,3);">ADMIN DASHBOARD</a>
+  </nav>
+
+  <div class="admin-container">
+    <h1>Student Management Dashboard</h1>
+
+    <div class="stats-cards">
+      <div class="card">
+        <h2 id="totalStudents">0</h2>
+        <p>Registered Students</p>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Country</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody">
+        <tr>
+          <td colspan="5" style="text-align:center;">Loading students...</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 style="color:rgb(238,136,3); margin-top:50px; text-align:center;">Administrator Inbox (Messages)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody id="messagesTableBody">
+        <tr><td colspan="4" style="text-align:center;">Loading messages...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="bg.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Security Check: Only 'admin' username is allowed
+      if (localStorage.getItem('currentUser') !== 'admin') {
+        alert("Access Denied! You are not authorized to view this page.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      // Fetch Students
+      try {
+        const res = await fetch('/api/admin/users');
+        const data = await res.json();
+
+        if (data.success) {
+          const users = data.users;
+          document.getElementById('totalStudents').innerText = users.length;
+
+          let tableHTML = '';
+          users.forEach(u => {
+            tableHTML += `<tr>
+              <td>${u.id}</td>
+              <td style="color:rgb(238,136,3);"><strong>${u.username}</strong></td>
+              <td>${u.email}</td>
+              <td>${u.phone}</td>
+              <td>${u.country}</td>
+            </tr>`;
+          });
+          
+          if(users.length === 0) tableHTML = '<tr><td colspan="5" style="text-align:center;">No students registered yet.</td></tr>';
+          
+          document.getElementById('userTableBody').innerHTML = tableHTML;
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('userTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:red;">Error loading student data.</td></tr>';
+      }
+
+      // Fetch Messages
+      try {
+        const resMsg = await fetch('/api/admin/messages');
+        const dataMsg = await resMsg.json();
+        
+        if (dataMsg.success) {
+          const msgs = dataMsg.messages;
+          
+          let inboxHTML = '';
+          msgs.forEach(m => {
+            const dateStr = new Date(m.created_at).toLocaleString();
+            inboxHTML += `<tr>
+              <td style="color:#aaa;font-size:12px;">${dateStr}</td>
+              <td style="color:rgb(238,136,3);"><strong>${m.name}</strong></td>
+              <td><a href="mailto:${m.email}" style="color:#ccc;">${m.email}</a></td>
+              <td>${m.message}</td>
+            </tr>`;
+          });
+          
+          if(msgs.length === 0) inboxHTML = '<tr><td colspan="4" style="text-align:center;">No messages in inbox.</td></tr>';
+          
+          document.getElementById('messagesTableBody').innerHTML = inboxHTML;
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('messagesTableBody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:red;">Error loading inbox.</td></tr>';
+      }
+    });
+  </script>
+</body>
+
+</html>

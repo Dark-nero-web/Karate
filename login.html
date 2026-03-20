@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Shotokan Karate Academy</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #000000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    @keyframes bgGradient {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      25% {
+        background-position: 50% 25%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      75% {
+        background-position: 50% 75%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .login-container {
+      background-color: #1a1a1a;
+      padding: 30px;
+      border: 2px solid rgba(255, 251, 0, 0.3);
+      width: 100%;
+      max-width: 450px;
+      border-radius: 10px;
+      color: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .login-container h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: rgb(255, 251, 0);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #ddd;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255, 251, 0, 0.3);
+      border-radius: 5px;
+      background-color: #2a2a2a;
+      color: white;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border: 2px solid rgb(255, 251, 0);
+      background-color: #333;
+    }
+
+    .form-group select {
+      cursor: pointer;
+    }
+
+    .form-group select option {
+      background-color: #2a2a2a;
+      color: white;
+    }
+
+    .password-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    #password {
+      padding-right: 45px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: #ddd;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 5px;
+      font-weight: bold;
+    }
+
+    .toggle-password:hover {
+      color: #fff;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: rgb(238, 136, 3);
+      color: black;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: rgb(255, 170, 0);
+      transform: scale(1.05);
+    }
+
+    .login-btn:active {
+      transform: scale(0.98);
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-container">
+    <h1>Login / Register</h1>
+
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required placeholder="Enter your username">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" required placeholder="Enter your email">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" required placeholder="e.g. +94712345678">
+        <small style="color:#ccc; display:block; margin-top:6px;">Country code required (e.g. +94 for Sri Lanka)</small>
+      </div>
+
+      <div class="form-group">
+        <label for="country">Country:</label>
+        <select id="country" name="country" required>
+          <option value="">Select your country</option>
+          <option value="Sri Lanka">Sri Lanka</option>
+          <option value="India">India</option>
+          <option value="Bangladesh">Bangladesh</option>
+          <option value="Pakistan">Pakistan</option>
+          <option value="Nepal">Nepal</option>
+          <option value="United States">United States</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Canada">Canada</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="China">China</option>
+          <option value="Thailand">Thailand</option>
+          <option value="Singapore">Singapore</option>
+          <option value="Malaysia">Malaysia</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <div class="password-group">
+          <input type="password" id="password" name="password" required placeholder="Enter your password">
+          <button type="button" class="toggle-password" onclick="togglePassword()" id="toggleBtn">SHOW</button>
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn">Login / Register</button>
+    </form>
+    <a href="index.html" class="back-link">← Back to Home</a>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordField = document.getElementById("password");
+      const toggleBtn = document.getElementById("toggleBtn");
+
+      if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleBtn.textContent = "HIDE";
+      } else {
+        passwordField.type = "password";
+        toggleBtn.textContent = "SHOW";
+      }
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      let phone = document.getElementById("phone").value;
+      const country = document.getElementById("country").value;
+      const password = document.getElementById("password").value;
+
+      if (!username || !email || !phone || !country || !password) {
+        alert("⚠ Please fill in all fields!");
+        return;
+      }
+
+      const countryCodeMap = {
+        "Sri Lanka": "+94",
+        "India": "+91",
+        "Bangladesh": "+880",
+        "Pakistan": "+92",
+        "Nepal": "+977",
+        "United States": "+1",
+        "United Kingdom": "+44",
+        "Canada": "+1",
+        "Australia": "+61",
+        "Japan": "+81",
+        "China": "+86",
+        "Thailand": "+66",
+        "Singapore": "+65",
+        "Malaysia": "+60"
+      };
+
+      const targetCountryCode = countryCodeMap[country] || "+";
+
+      phone = phone.trim();
+      if (!phone.startsWith("+")) {
+        if (phone.startsWith("0")) {
+          phone = phone.substring(1);
+        }
+        phone = targetCountryCode + phone.replace(/[^0-9]/g, "");
+      } else {
+        phone = "+" + phone.replace(/[^0-9]/g, "");
+      }
+
+      if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+        alert("⚠ Password must be at least 8 characters and include letters and numbers.");
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("⚠ Please enter a valid email address.");
+        return;
+      }
+
+      const phoneRegex = /^\+?[0-9]{7,15}$/;
+      if (!phoneRegex.test(phone)) {
+        alert("⚠ Please enter a valid phone number with country code (e.g., +94712345678).");
+        return;
+      }
+
+      const payload = { username, email, phone, country, password };
+      
+      fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error && data.error.includes("Username already exists")) {
+          // Attempt Login
+          return fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          })
+          .then(res => res.json())
+          .then(loginData => {
+            if (loginData.success) {
+               localStorage.setItem('currentUser', username);
+               alert("✓ Login Successful! Welcome back " + username + "!");
+               window.location.href = "index.html";
+            } else {
+               alert("⚠ " + loginData.error);
+            }
+          });
+        } else if (data.success) {
+           localStorage.setItem('currentUser', username);
+           alert("✓ Registration Successful! Welcome " + username + "!");
+           window.location.href = "index.html";
+        } else {
+           alert("⚠ Error: " + data.error);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("⚠ Error connecting to server. Please ensure the backend is running.");
+      });
+    }
+  </script>
+
+  <script src="bg.js"></script>
+</body>
+
+</html>
