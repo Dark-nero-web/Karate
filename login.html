@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="Login to your Shotokan Karate Academy account to access your profile, track belt progress, and connect with the dojo.">
+  <meta name="keywords" content="karate login, shotokan academy login, student login, member access">
+  <title>Login - Shotokan Karate Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    .auth-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('img/hero-bg.png') no-repeat center/cover;
+    }
+    .auth-card {
+        width: 100%;
+        max-width: 400px;
+        background: rgba(26, 26, 26, 0.7);
+        backdrop-filter: blur(15px);
+        padding: 40px;
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .auth-card h2 { margin-bottom: 20px; }
+    .auth-footer {
+        margin-top: 20px;
+        text-align: center;
+        color: var(--text-gray);
+    }
+    .auth-footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: bold;
+    }
+    #authStatus {
+        margin-top: 15px;
+        text-align: center;
+        padding: 10px;
+        border-radius: 6px;
+        display: none;
+    }
+  </style>
+</head>
+<body>
+  <script src="header.js"></script>
+
+  <div class="auth-container fade-in">
+    <div class="auth-card">
+        <h2>Welcome Back</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter your password">
+            </div>
+            <button type="submit" class="login-btn">Sign In</button>
+            <div id="authStatus"></div>
+        </form>
+        <div class="auth-footer">
+            Don't have an account? <a href="register.html">Join Now</a>
+        </div>
+    </div>
+  </div>
+
+  <script src="footer.js"></script>
+  <script src="bg.js"></script>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const status = document.getElementById('authStatus');
+        const loginData = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        };
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loginData)
+            });
+            const data = await res.json();
+
+            status.style.display = 'block';
+            if (data.success) {
+                localStorage.setItem('currentUser', data.user.id);
+                
+                // Simulated Welcome SMS Notification
+                status.style.display = 'block';
+                status.style.background = 'rgba(3, 255, 45, 0.2)';
+                status.style.color = '#03ff2d';
+                status.innerText = "Login successful! [SMS Sent: Welcome back to Karate Academy!]";
+                
+                setTimeout(() => {
+                    window.location.href = data.user.username === 'admin' ? 'admin.html' : 'profile.html';
+                }, 2000);
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (err) {
+            status.style.display = 'block';
+            status.style.background = 'rgba(255, 0, 0, 0.2)';
+            status.style.color = '#ff4444';
+            status.innerText = "Error: " + err.message;
+        }
+    });
+  </script>
+</body>
+</html>

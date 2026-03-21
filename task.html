@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Time Table</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+    body {
+        font-family: Arial;
+        background: #111;
+        color: white;
+        text-align: center;
+    }
+     table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 15px; border-bottom: 1px solid var(--glass-border); }
+    th { color: var(--primary-color); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    
+    th, td {
+        border: 1px solid #555;
+        padding: 10px;
+    }
+    th {
+        background: #fbff0085;
+    }
+    td:hover {
+        background: #333;
+    }
+</style>
+</head>
+<body>
+ <script src="header.js"></script>
+<h1>Weekly Time Table</h1>
+
+<table>
+    <tr>
+        <th>Time</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+    </tr>
+
+    <tr>
+        <td>6:00 - 7:00</td>
+        <td>Exercise</td>
+        <td>Exercise</td>
+        <td>Exercise</td>
+        <td>Exercise</td>
+        <td>Exercise</td>
+        <td>Karate</td>
+        <td>Rest</td>
+    </tr>
+
+    <tr>
+        <td>8:00 - 10:00</td>
+        <td>Study</td>
+        <td>Study</td>
+        <td>Study</td>
+        <td>Study</td>
+        <td>Study</td>
+        <td>Practice</td>
+        <td>Free Time</td>
+    </tr>
+
+    <tr>
+        <td>10:00 - 12:00</td>
+        <td>Website Work</td>
+        <td>Website Work</td>
+        <td>Website Work</td>
+        <td>Website Work</td>
+        <td>Website Work</td>
+        <td>Project</td>
+        <td>Rest</td>
+    </tr>
+
+    <tr>
+        <td>2:00 - 4:00</td>
+        <td>Karate Training</td>
+        <td>Free</td>
+        <td>Karate Training</td>
+        <td>Free</td>
+        <td>Karate Training</td>
+        <td>Gym</td>
+        <td>Relax</td>
+    </tr>
+
+</table>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Karate Quiz</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<style>
+body {
+  font-family: Arial;
+  background: #111;
+  color: white;
+  text-align: center;
+}
+
+.quiz-box {
+  background: #22222200;
+  padding: 20px;
+  border-radius: 10px;
+  border: #ffe601 solid 5px;
+  width: 350px;
+  margin: 50px auto;
+}
+
+button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  background: #cc02ff77;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #55555500;
+}
+
+.correct {
+  background: green !important;
+}
+
+.wrong {
+  background: red !important;
+}
+
+#score {
+  margin-top: 10px;
+  font-size: 18px;
+  color: gold;
+}
+
+#timer {
+  font-size: 20px;
+  color: cyan;
+}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-box">
+  <h2>🥋 Karate Quiz</h2>
+
+  <!-- ✅ START BUTTON -->
+  <button id="startBtn">▶ Start Quiz</button>
+
+  <!-- ✅ TIMER -->
+  <h3 id="timer"></h3>
+
+  <h3 id="question">Press Start to Begin</h3>
+  <div id="answers"></div>
+  <p id="score">Score: 0</p>
+</div>
+
+<script>
+const quiz = [
+  {
+    question: "Karate originated from which country?",
+    answers: ["Japan", "China", "Korea", "Thailand"],
+    correct: 0
+  },
+  {
+    question: "What does 'Karate' mean?",
+    answers: ["Empty Hand", "Strong Hand", "Fast Hand", "Power Hand"],
+    correct: 0
+  },
+  {
+    question: "Shotokan founder is?",
+    answers: ["Gichin Funakoshi", "Bruce Lee", "Jackie Chan", "Ip Man"],
+    correct: 0
+  }
+];
+
+let current = 0;
+let score = 0;
+let timeLeft = 5;
+let timer;
+
+const startBtn = document.getElementById("startBtn");
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const timerEl = document.getElementById("timer");
+
+startBtn.onclick = () => {
+  startBtn.style.display = "none";
+  loadQuestion();
+};
+
+function startTimer() {
+  timeLeft = 5;
+  timerEl.innerText = "Time: " + timeLeft;
+
+  timer = setInterval(() => {
+    timeLeft--;
+    timerEl.innerText = "Time: " + timeLeft;
+
+    if (timeLeft <= 2) {
+      timerEl.style.color = "red";
+    } else {
+      timerEl.style.color = "cyan";
+    }
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      nextQuestion();
+    }
+  }, 1000);
+}
+
+function loadQuestion() {
+  clearInterval(timer);
+  startTimer();
+
+  let q = quiz[current];
+  questionEl.innerText = q.question;
+
+  answersEl.innerHTML = "";
+
+  q.answers.forEach((ans, index) => {
+    let btn = document.createElement("button");
+    btn.innerText = ans;
+    btn.onclick = () => checkAnswer(index, btn);
+    answersEl.appendChild(btn);
+  });
+}
+
+function checkAnswer(index, btn) {
+  clearInterval(timer);
+
+  let correctIndex = quiz[current].correct;
+  let buttons = document.querySelectorAll("#answers button");
+
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+
+    if (i === correctIndex) {
+      b.classList.add("correct");
+    }
+  });
+
+  if (index === correctIndex) {
+    score++;
+  } else {
+    btn.classList.add("wrong");
+  }
+
+  document.getElementById("score").innerText = "Score: " + score;
+
+  setTimeout(nextQuestion, 1500);
+}
+
+function nextQuestion() {
+  current++;
+
+  if (current < quiz.length) {
+    loadQuestion();
+  } else {
+    questionEl.innerText = "🏁 Quiz Finished!";
+    answersEl.innerHTML = "";
+    timerEl.innerText = "";
+  }
+}
+</script>
+
+<script src="footer.js"></script>
+<script src="bg.js"></script>
+
+</body>
+</html>

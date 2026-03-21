@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="Admin dashboard for Shotokan Karate Academy. Manage students, view messages, and monitor rank statistics.">
+  <meta name="keywords" content="karate admin, admin dashboard, student management, academy admin">
+  <title>Admin Dashboard - Shotokan Karate Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    .stat-card {
+        padding: 30px;
+        text-align: center;
+        background: var(--card-bg);
+        border-bottom: 4px solid var(--primary-color);
+    }
+    .stat-card h3 { font-size: 2.5rem; margin: 0; color: var(--primary-color); }
+    .stat-card p { margin: 10px 0 0; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+
+    .table-container {
+        overflow-x: auto;
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        margin-top: 30px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 15px; border-bottom: 1px solid var(--glass-border); }
+    th { color: var(--primary-color); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    
+    .badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+    .badge-user { background: rgba(3, 255, 45, 0.2); color: #03ff2d; }
+    .badge-admin { background: rgba(255, 170, 0, 0.2); color: var(--primary-color); }
+  </style>
+</head>
+<body>
+  <script src="header.js"></script>
+
+  <div class="hero fade-in">
+    <h1>Admin Central</h1>
+    <p>Management & Analytics Overview</p>
+  </div>
+
+  <div class="admin-grid fade-in">
+    <div class="stats-row">
+        <div class="card stat-card">
+            <h3 id="userCount">...</h3>
+            <p>Total Members</p>
+        </div>
+        <div class="card stat-card">
+            <h3 id="messageCount">...</h3>
+            <p>Inbox Messages</p>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 30px;">
+        <h2>Student Rank Statistics</h2>
+        <div id="rankStatsContainer" style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+            <p>Loading stats...</p>
+        </div>
+    </div>
+
+    <!-- Inbox Table (Moved Up) -->
+    <div class="table-container">
+        <h2>INBOX <button onclick="loadMessages()" style="font-size: 0.8rem; background: none; border: 1px solid var(--primary-color); color: var(--primary-color); border-radius: 4px; cursor: pointer; padding: 2px 8px; float: right;">Refresh</button></h2>
+        <table id="messagesTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Registered Members Table (Moved Down) -->
+    <div class="table-container">
+        <h2>Registered Members</h2>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Status</th>
+                    <th>Rank/Kyu</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+  </div>
+
+  <script src="footer.js"></script>
+  <script src="bg.js"></script>
+
+  <script>
+    // Security check for Admin access
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) window.location.href = 'login.html';
+
+    // Verify the logged-in user is actually an admin
+    (async function verifyAdmin() {
+        try {
+            const res = await fetch('/api/profile/' + currentUser);
+            const data = await res.json();
+            if (!data.success || data.user.username !== 'admin') {
+                alert('Access denied. Admin privileges required.');
+                window.location.href = 'index.html';
+                return;
+            }
+        } catch (e) {
+            window.location.href = 'login.html';
+        }
+    })();
+
+    const headers = { 
+        'x-admin-user': 'admin',
+        'Content-Type': 'application/json'
+    };
+
+    async function deleteUser(id) {
+        if (!confirm("Are you sure you want to delete this student?")) return;
+        try {
+            const res = await fetch(`/api/admin/users/${id}`, { 
+                method: 'DELETE',
+                headers 
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert("Student removed successfully.");
+                loadUsers();
+                loadStats();
+            } else {
+                alert("Error: " + data.message);
+            }
+        } catch (e) { alert("Failed to delete user."); }
+    }
+
+    async function loadStats() {
+        const container = document.getElementById('rankStatsContainer');
+        try {
+            const res = await fetch('/api/admin/stats', { headers });
+            const data = await res.json();
+            if (data.success) {
+                if (!data.stats || data.stats.length === 0) {
+                    container.innerHTML = '<p>No student data yet.</p>';
+                    return;
+                }
+                container.innerHTML = data.stats.map(s => `
+                    <div style="background: rgba(255,170,0,0.1); padding: 15px; border-radius: 8px; border: 1px solid var(--primary-color); min-width: 120px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">${s.count}</div>
+                        <div style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">${s.kyu || 'Unranked'}</div>
+                    </div>
+                `).join('');
+            }
+        } catch (e) { console.error("Stats fetch error:", e); }
+    }
+
+    async function loadUsers() {
+        try {
+            const userRes = await fetch('/api/admin/users', { headers });
+            const userData = await userRes.json();
+            document.getElementById('userCount').innerText = userData.users ? userData.users.length : 0;
+            const userBody = document.querySelector('#usersTable tbody');
+            userBody.innerHTML = userData.users.map(u => `
+                <tr>
+                    <td>#${u.id}</td>
+                    <td style="font-weight:bold;">${u.username}</td>
+                    <td><span class="badge badge-user">ACTIVE</span></td>
+                    <td style="color:var(--primary-color); font-weight:bold;">${u.country || 'N/A'}</td>
+                    <td>
+                        ${u.username !== 'admin' ? 
+                            `<button onclick="deleteUser(${u.id})" style="background:#ff4444; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:0.7rem; cursor:pointer;">DELETE</button>` 
+                            : '<span style="color:#666; font-size:0.75rem;">PROTECTED</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        } catch (e) { console.error("Error loading users:", e); }
+    }
+
+    async function loadMessages() {
+        try {
+            const msgRes = await fetch('/api/admin/messages', { headers });
+            const msgData = await msgRes.json();
+            document.getElementById('messageCount').innerText = msgData.messages ? msgData.messages.length : 0;
+            const msgBody = document.querySelector('#messagesTable tbody');
+            if (!msgData.messages || msgData.messages.length === 0) {
+                msgBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888; padding:20px;">Inbox is empty</td></tr>';
+                return;
+            }
+            msgBody.innerHTML = msgData.messages.map(m => {
+                const subject = encodeURIComponent("Reply from Karate Academy");
+                const body = encodeURIComponent(`Hello ${m.name},\n\nRegarding your message: "${m.message}"\n\n`);
+                return `
+                <tr>
+                    <td style="color:#888; font-size: 0.8rem;">RECENT</td>
+                    <td style="font-weight:bold;">${m.name}</td>
+                    <td>${m.email}</td>
+                    <td style="font-style:italic;">"${m.message}"</td>
+                    <td>
+                        <a href="mailto:${m.email}?subject=${subject}&body=${body}" 
+                           class="badge badge-admin" style="text-decoration:none;">REPLY</a>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        } catch (e) { console.error("Admin fetch error:", e); }
+    }
+
+    window.onload = () => {
+        loadStats();
+        loadUsers();
+        loadMessages();
+    }
+  </script>
+</body>
+</html>

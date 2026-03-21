@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="View and manage your Shotokan Karate Academy profile. Update your belt rank, upload a photo, and track progress.">
+  <meta name="keywords" content="karate profile, student profile, belt rank, karate progress">
+  <title>Your Profile - Shotokan Karate Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .profile-layout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 20px;
+        min-height: calc(100vh - 200px);
+    }
+    .profile-card {
+        width: 100%;
+        max-width: 600px;
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        padding: 40px;
+        border-radius: 20px;
+        border: 1px solid var(--glass-border);
+        text-align: center;
+    }
+    .profile-avatar-large {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 4px solid var(--primary-color);
+        margin: 0 auto 20px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    .profile-avatar-large:hover { transform: scale(1.05); }
+    
+    .profile-data { text-align: left; margin-top: 30px; }
+    .data-item {
+        background: rgba(255,255,255,0.03);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border-left: 3px solid var(--primary-color);
+    }
+    .data-item strong { color: var(--text-gray); font-size: 0.8rem; text-transform: uppercase; display: block; margin-bottom: 5px; }
+    .data-item span { font-size: 1.1rem; font-weight: 600; }
+    
+    .profile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+    .btn-secondary { background: #333; color: white; border: 1px solid #444; }
+  </style>
+</head>
+<body>
+  <script src="header.js"></script>
+
+  <div class="profile-layout fade-in">
+    <div class="profile-card" id="profileCard">
+        <div class="avatar-section">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>" 
+                 id="userAvatar" class="profile-avatar-large" title="Click to upload new photo"
+                 onclick="document.getElementById('avatarUpload').click()">
+            <input type="file" id="avatarUpload" style="display:none" accept="image/*" onchange="uploadAvatar(event)">
+            <h2 id="displayUsername">Loading...</h2>
+            <span class="badge badge-user">Member</span>
+        </div>
+
+        <div class="profile-data" id="profileData">
+            <div class="data-item"><strong>Username</strong><span id="uName">...</span></div>
+            <div class="data-item">
+                <strong>Current Rank / Belt</strong>
+                <select id="kyuSelect" class="form-group" style="width:100%; background:rgba(0,0,0,0.3); color:white; border:1px solid #444; padding:10px; border-radius:5px; margin-top:5px;">
+                    <option value="10kyu">10th Kyu (White)</option>
+                    <option value="9kyu">9th Kyu (Orange)</option>
+                    <option value="8kyu">8th Kyu (Red)</option>
+                    <option value="7kyu">7th Kyu (Yellow)</option>
+                    <option value="6kyu">6th Kyu (Green)</option>
+                    <option value="5kyu">5th Kyu (Purple)</option>
+                    <option value="4kyu">4th Kyu (Purple/White)</option>
+                    <option value="3kyu">3rd Kyu (Brown)</option>
+                    <option value="2kyu">2nd Kyu (Brown)</option>
+                    <option value="1kyu">1st Kyu (Brown)</option>
+                    <option value="1dan">1st Dan (Black)</option>
+                    <option value="2dan">2nd Dan (Black)</option>
+                </select>
+            </div>
+            <div class="data-item"><strong>Academy Member Since</strong><span>2026</span></div>
+        </div>
+
+        <div class="profile-actions">
+            <button class="login-btn" onclick="saveProfile()">Save Changes</button>
+            <button class="login-btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+        <a href="index.html" class="login-btn" style="display:block; margin-top:20px; background:rgba(255,255,255,0.05); text-decoration:none; border:1px solid var(--glass-border);">Return to Home</a>
+    </div>
+  </div>
+
+  <script src="footer.js"></script>
+  <script src="bg.js"></script>
+
+  <script>
+    const currentUserId = localStorage.getItem('currentUser');
+    if (!currentUserId) window.location.href = 'login.html';
+
+    async function loadProfile() {
+        try {
+            const res = await fetch('/api/profile/' + currentUserId);
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('displayUsername').innerText = data.user.username;
+                document.getElementById('uName').innerText = data.user.username;
+                if (data.user.country) {
+                    document.getElementById('kyuSelect').value = data.user.country;
+                }
+                if (data.user.profileImage) {
+                    document.getElementById('userAvatar').src = data.user.profileImage;
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    async function saveProfile() {
+        const kyu = document.getElementById('kyuSelect').value;
+        try {
+            const res = await fetch('/api/profile/' + currentUserId + '/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ kyu })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert("Profile and Rank updated successfully!");
+                window.location.reload();
+            } else {
+                alert("Error: " + data.message);
+            }
+        } catch (err) { console.error(err); }
+    }
+
+    async function uploadAvatar(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const dataUrl = e.target.result;
+            document.getElementById('userAvatar').src = dataUrl;
+            
+            try {
+                await fetch('/api/profile/' + currentUserId + '/avatar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ profileImage: dataUrl })
+                });
+            } catch (err) { console.error(err); }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function logout() {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>

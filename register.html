@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="description" content="Register for a free account at Shotokan Karate Academy. Join our community of martial artists and track your belt progress.">
+  <meta name="keywords" content="karate registration, join karate academy, shotokan signup, become a member">
+  <title>Register - Shotokan Karate Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    .auth-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('img/hero-bg.png') no-repeat center/cover;
+    }
+    .auth-card {
+        width: 100%;
+        max-width: 400px;
+        background: rgba(26, 26, 26, 0.7);
+        backdrop-filter: blur(15px);
+        padding: 40px;
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+    }
+    .auth-card h2 { margin-bottom: 20px; }
+    .auth-footer {
+        margin-top: 20px;
+        text-align: center;
+        color: var(--text-gray);
+    }
+    .auth-footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: bold;
+    }
+    #authStatus {
+        margin-top: 15px;
+        text-align: center;
+        padding: 10px;
+        border-radius: 6px;
+        display: none;
+    }
+  </style>
+</head>
+<body>
+  <script src="header.js"></script>
+
+  <div class="auth-container fade-in">
+    <div class="auth-card">
+        <h2>Create Account</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required placeholder="name@example.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number (with Country Code)</label>
+                <input type="tel" id="phone" required placeholder="+94 7x xxx xxxx" pattern="^\+?[1-9]\d{1,14}$" title="Please use international format (e.g., +94771234567)">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Create a strong password" 
+                    pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" 
+                    title="Password must be at least 8 characters long and include both letters and numbers.">
+                <p style="font-size: 0.75rem; color: #888; margin-top: 5px;">* Minimum 8 characters, including letters and numbers.</p>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" required placeholder="Repeat your password">
+            </div>
+            
+            <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid var(--glass-border); margin-bottom: 20px;">
+                <label style="margin-bottom: 10px; display: block; font-size: 0.9rem;">Puzzle Verification: <span id="puzzleQuestion" style="color: var(--primary-color); font-weight: bold;"></span></label>
+                <input type="number" id="puzzleAnswer" required placeholder="Enter answer here">
+            </div>
+
+            <button type="submit" id="regBtn" class="login-btn">Register Now</button>
+            <div id="authStatus"></div>
+        </form>
+        <div class="auth-footer">
+            Already a member? <a href="login.html">Sign In</a>
+        </div>
+    </div>
+  </div>
+
+  <script src="footer.js"></script>
+  <script src="bg.js"></script>
+
+  <script>
+    let num1, num2, correctAnswer;
+
+    function generatePuzzle() {
+        num1 = Math.floor(Math.random() * 10) + 1;
+        num2 = Math.floor(Math.random() * 10) + 1;
+        correctAnswer = num1 + num2;
+        document.getElementById('puzzleQuestion').innerText = `${num1} + ${num2} = ?`;
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const status = document.getElementById('authStatus');
+        
+        const puzzleAnswer = parseInt(document.getElementById('puzzleAnswer').value);
+        if (puzzleAnswer !== correctAnswer) {
+            status.style.display = 'block';
+            status.style.background = 'rgba(255, 0, 0, 0.2)';
+            status.style.color = '#ff4444';
+            status.innerText = "Error: Incorrect puzzle answer. Please try again.";
+            generatePuzzle();
+            return;
+        }
+
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (password !== confirmPassword) {
+            status.style.display = 'block';
+            status.style.background = 'rgba(255, 0, 0, 0.2)';
+            status.style.color = '#ff4444';
+            status.innerText = "Passwords do not match!";
+            return;
+        }
+
+        try {
+            console.log("Attempting registration & verification for:", username);
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, phone, password })
+            });
+            
+            let data;
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                data = await res.json();
+            } else {
+                const text = await res.text();
+                console.error("Non-JSON response:", text);
+                throw new Error("Server returned non-JSON response. Check console.");
+            }
+
+            status.style.display = 'block';
+            if (data.success) {
+                status.style.background = 'rgba(3, 255, 45, 0.2)';
+                status.style.color = '#03ff2d';
+                status.innerText = "Verification Success! Registration complete. SMS Sent.";
+                setTimeout(() => window.location.href = 'login.html', 2000);
+            } else {
+                throw new Error(data.message || "Registration failed");
+            }
+        } catch (err) {
+            console.error("Registration error:", err);
+            status.style.display = 'block';
+            status.style.background = 'rgba(255, 0, 0, 0.2)';
+            status.style.color = '#ff4444';
+            status.innerText = "Error: " + err.message;
+            generatePuzzle();
+        }
+    });
+
+    generatePuzzle();
+  </script>
+</body>
+</html>

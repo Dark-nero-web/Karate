@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact Shotokan Karate Academy for classes, grading, and membership inquiries. Located in Colombo, Sri Lanka.">
+  <meta name="keywords" content="contact karate, karate classes colombo, martial arts inquiry, join karate academy">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Contact Us - Shotokan Karate Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .contact-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 40px 20px;
+        max-width: 1100px;
+        margin: 0 auto;
+        align-items: start;
+    }
+    @media (max-width: 768px) {
+        .contact-container { grid-template-columns: 1fr; }
+    }
+    .contact-info .info-card {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        background: var(--card-bg);
+        margin-bottom: 5px;
+        border-left: 4px solid var(--primary-color);
+    }
+    #contactStatus {
+        margin-top: 15px;
+        padding: 5px;
+        border-radius: 5px;
+        display: none;
+    }
+  </style>
+</head>
+<body>
+  <script src="header.js"></script>
+
+  <div class="hero fade-in">
+    <h1>Get In Touch</h1>
+    <p>We'd love to hear from you</p>
+  </div>
+
+  <div class="section contact-container fade-in">
+    <div class="contact-form card">
+        <h2>Send a Message</h2>
+        <form id="academyContactForm">
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="message">Your Message</label>
+                <textarea id="message" name="message" rows="5" required placeholder="How can we help?"></textarea>
+            </div>
+            <button type="submit" class="login-btn">Send Message</button>
+            <div id="contactStatus"></div>
+        </form>
+    </div>
+
+    <div class="contact-info">
+        <div class="card info-card">
+            <h3>Whatsapp Group</h3>
+            <a href="https://chat.whatsapp.com/CtwTnqa1GSPLVLXJfUogiZ?mode=gi_t">JOIN</a>
+            <h3>📧 Email</h3>
+            <a href="mailto:nerodark445@gmail.com">nerodark445@gmail.com</a>
+            <h3>📞 Phone</h3>
+            <a href="tel:+94764771497">+94 76 477 1497</a>
+            <h3>📍 Location</h3>
+            <p>Chilaw, Sri Lanka</p>
+        </div>
+
+
+  <script src="footer.js"></script>
+  <script src="bg.js"></script>
+
+  <script>
+    document.getElementById('academyContactForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const status = document.getElementById('contactStatus');
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
+        };
+
+        try {
+            const res = await fetch('/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            const data = await res.json();
+            
+            status.style.display = 'block';
+            if (data.success) {
+                status.style.background = 'rgba(3, 255, 45, 0.2)';
+                status.style.color = '#03ff2d';
+                status.innerText = "Message sent successfully!";
+                e.target.reset();
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (err) {
+            status.style.display = 'block';
+            status.style.background = 'rgba(255, 0, 0, 0.2)';
+            status.style.color = '#ff4444';
+            status.innerText = "Error: " + err.message;
+        }
+    });
+  </script>
+</body>
+</html>

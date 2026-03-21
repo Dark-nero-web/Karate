@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View our gallery of traditional Shotokan Karate training, dojo life, and martial arts spirit.">
+  <meta name="keywords" content="karate gallery, martial arts photos, dojo images, karate training photos">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Gallery - Shotokan Karate Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .gallery-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      cursor: pointer;
+      aspect-ratio: 16/9;
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.02);
+      border-color: var(--primary-color);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      cursor: zoom-out;
+    }
+
+    #lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border: 2px solid var(--primary-color);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="header.js"></script>
+
+  <div class="search-container fade-in" style="background: rgba(0, 0, 0, 0.5); text-align: center; padding: 20px;">
+    <input id="globalSearchInput" type="search" placeholder="Search gallery and site..."
+      style="width:100%; max-width: 600px; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+    <div id="globalSearchResults"
+      style="max-height: 240px; overflow-y: auto; text-align: left; max-width: 600px; margin: 0 auto;"></div>
+  </div>
+  <script src="search.js"></script>
+
+  <div class="hero fade-in">
+    <h1>Gallery</h1>
+    <p>Capturing the Spirit of Karate</p>
+  </div>
+
+  <div class="gallery-container">
+    <div class="gallery-item fade-in" style="animation-delay: 0.1s" onclick="openLightbox('img/karate_dojo.png')">
+      <img src="img/karate_dojo.png" alt="Dojo Training">
+      <div style="position:absolute; bottom:0; left:0; width:100%; padding:15px; background:linear-gradient(transparent, rgba(0,0,0,0.8)); color:white; font-size:0.9rem;">Dojo Training</div>
+    </div>
+    <div class="gallery-item fade-in" style="animation-delay: 0.2s" onclick="openLightbox('img/sunset_karate.png')">
+      <img src="img/sunset_karate.png" alt="Beach Training">
+      <div style="position:absolute; bottom:0; left:0; width:100%; padding:15px; background:linear-gradient(transparent, rgba(0,0,0,0.8)); color:white; font-size:0.9rem;">Sunset Beach Training</div>
+    </div>
+    <div class="gallery-item fade-in" style="animation-delay: 0.3s" onclick="openLightbox('img/kumite_sparing.png')">
+      <img src="img/kumite_sparing.png" alt="Kumite Match">
+      <div style="position:absolute; bottom:0; left:0; width:100%; padding:15px; background:linear-gradient(transparent, rgba(0,0,0,0.8)); color:white; font-size:0.9rem;">Kumite Sparring Match</div>
+    </div>
+  </div>
+
+  <div id="lightbox" onclick="this.style.display='none'">
+    <div style="position:relative; max-width:90%; max-height:90%;">
+        <img id="lightbox-img" src="" alt="Full size view" style="border: 3px solid var(--primary-color); border-radius: 12px; box-shadow: 0 0 50px rgba(255,170,0,0.3);">
+        <div style="position:absolute; top:-40px; right:0; color:white; font-weight:bold; cursor:pointer; font-size:1.5rem;">✕</div>
+    </div>
+  </div>
+
+  <script src="footer.js"></script>
+  <script src="bg.js"></script>
+
+  <script>
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').style.display = 'flex';
+    }
+  </script>
+</body>
+
+</html>

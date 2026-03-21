@@ -1,0 +1,330 @@
+/* Global Styles & Design System */
+:root {
+    --primary-color: #ffaa00;
+    /* Gold/Orange */
+    --secondary-color: #7e0778;
+    /* Purple */
+    --accent-color: #03ff2d;
+    /* Green for success/highlight */
+    --bg-dark: #0a0a0a;
+    --card-bg: rgba(26, 26, 26, 0.8);
+    --text-white: #ffffff;
+    --text-gray: #bbbbbb;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --header-bg: #000;
+    --nav-text: #ffffff;
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-text: #ffffff;
+    --hero-overlay: rgba(0, 0, 0, 0.6);
+    --scrollbar-bg: #000;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+    --bg-dark: #f0f0f0;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --text-white: #1a1a1a;
+    --text-gray: #555555;
+    --glass-bg: rgba(0, 0, 0, 0.03);
+    --glass-border: rgba(0, 0, 0, 0.12);
+    --header-bg: #ffffff;
+    --nav-text: #ffffff;
+    --input-bg: rgba(0, 0, 0, 0.05);
+    --input-text: #1a1a1a;
+    --hero-overlay: rgba(255, 255, 255, 0.5);
+    --scrollbar-bg: #e0e0e0;
+}
+
+body {
+    margin: 0;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #ffc400;
+}
+
+/* Header & Navigation */
+header {
+    background: var(--header-bg);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    z-index: 100;
+    border-bottom: 2px solid var(--primary-color);
+    transition: background-color 0.3s ease;
+}
+
+header img {
+    width: 80px;
+    transition: transform 0.3s ease;
+}
+
+header img:hover {
+    transform: scale(1.1);
+}
+
+nav {
+    background: var(--secondary-color);
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+nav a {
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    background: var(--primary-color);
+    color: #000;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 20px 20px;
+    background: linear-gradient(var(--hero-overlay), var(--hero-overlay)), url('img/hero-bg.png') no-repeat center/cover;
+    position: relative;
+    border-bottom: 5px solid var(--primary-color);
+    transition: background 0.3s ease;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Section Styling */
+.section {
+    padding: 60px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.content {
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: var(--primary-color);
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    font-size: 2rem;
+}
+
+/* Card & Glassmorphism */
+.card,
+.belt-card {
+    background: var(--card-bg);
+    padding: 30px;
+    margin: 20px 0;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover,
+.belt-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    border-color: var(--primary-color);
+}
+
+.belt-card h3 {
+    color: var(--accent-color);
+    margin-top: 0;
+    font-size: 1.5rem;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-gray);
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--input-text);
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary-color);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background: #ffc400;
+    transform: scale(1.02);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.8s ease forwards;
+}
+
+/* Highlight targeted cards */
+.card:target {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 20px rgba(255, 170, 0, 0.4);
+    transform: scale(1.02);
+    outline: none;
+}
+
+/* Badges */
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-user {
+    background: rgba(3, 255, 45, 0.2);
+    color: #03ff2d;
+}
+
+.badge-admin {
+    background: rgba(255, 170, 0, 0.2);
+    color: var(--primary-color);
+}
+
+/* Mobile Enhancements */
+@media (max-width: 768px) {
+    header {
+        padding: 60px 10px 20px; /* More top padding for absolute buttons */
+        min-height: 220px !important;
+    }
+
+    header h2 {
+        font-size: 1.3rem !important;
+        padding: 0 40px;
+    }
+
+    header img {
+        width: 70px !important;
+    }
+
+    /* Smaller absolute buttons on mobile */
+    header div button, 
+    .header-auth .login-btn {
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+    }
+
+    nav {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    nav a {
+        padding: 12px 15px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .hero {
+        padding: 40px 15px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .section, .content {
+        padding: 30px 15px;
+    }
+
+    .card, .belt-card {
+        padding: 20px;
+        margin: 15px 0;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+    }
+}

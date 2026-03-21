@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore Zuki Waza (Punches) in Shotokan Karate. From Oi Zuki to Gyaku Zuki, master the foundation of karate.">
+  <meta name="keywords" content="karate punches, zuki waza, oi zuki, gyaku zuki, shotokan techniques">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>ZUKI (Punches) - Shotokan Karate Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="zuki-page">
+  <script src="header.js"></script>
+
+  <div class="search-container fade-in" style="background: rgba(0, 0, 0, 0.5); text-align: center; padding: 20px;">
+    <input id="globalSearchInput" type="search" placeholder="Search techniques..."
+      style="width:100%; max-width: 600px; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+    <div id="globalSearchResults"
+      style="max-height: 240px; overflow-y: auto; text-align: left; max-width: 600px; margin: 0 auto;"></div>
+  </div>
+  <script src="search.js"></script>
+
+  <div class="hero fade-in">
+    <h1>ZUKI - Punching Techniques</h1>
+    <p>Precision, Power, and Speed</p>
+  </div>
+
+  <div class="section zuki-list fade-in">
+    <h2>Techniques Table</h2>
+
+    <div class="card" id="oi-zuki">
+      <h3>👊 Oi Zuki (Lunge Punch)</h3>
+      <div class="difficulty">BEGINNER</div>
+      <p>A fundamental stepping punch where the arm and leg on the same side move forward together.</p>
+    </div>
+
+    <div class="card" id="gyaku-zuki">
+      <h3>👊 Gyaku Zuki (Reverse Punch)</h3>
+      <div class="difficulty">INTERMEDIATE</div>
+      <p>Executed with the arm opposite to the leading leg. This is the most powerful punch in Karate.</p>
+    </div>
+
+    <div class="card" id="ren-zuki">
+      <h3>👊 Ren Zuki (Double Punch)</h3>
+      <div class="difficulty">INTERMEDIATE</div>
+      <p>Two consecutive punches delivered at high speed.</p>
+    </div>
+
+    <div class="card" id="kizami-zuki">
+      <h3>👊 Kizami Zuki (Jab)</h3>
+      <div class="difficulty">INTERMEDIATE</div>
+      <p>A quick leading hand punch intended to disrupt or score point.</p>
+    </div>
+
+    <div class="card" id="yama-zuki">
+      <h3>👊 Yama Zuki (U-Punch)</h3>
+      <div class="difficulty">ADVANCED</div>
+      <p>Simultaneous punches to the head and stomach forming a 'U' shape with the arms.</p>
+    </div>
+  </div>
+
+  <script src="footer.js"></script>
+  <script src="bg.js"></script>
+</body>
+
+</html>
