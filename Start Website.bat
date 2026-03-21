@@ -1,6 +1,0 @@
-@echo off
-echo Starting Karate Academy Server...
-echo Please do not close this window while you are using the website.
-echo Opening browser...
-start http://localhost:3000
-node server.js
