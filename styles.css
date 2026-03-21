@@ -89,6 +89,7 @@ nav {
     top: 0;
     z-index: 99;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    flex-wrap: wrap;
 }
 
 nav a {
