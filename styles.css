@@ -273,20 +273,20 @@ textarea:focus {
 /* Mobile Enhancements */
 @media (max-width: 768px) {
     header {
-        padding: 60px 10px 20px; /* More top padding for absolute buttons */
-        min-height: 220px !important;
+        padding: 20px 10px;
+        min-height: auto !important;
     }
 
     header h2 {
         font-size: 1.3rem !important;
-        padding: 0 40px;
+        padding: 0 10px;
     }
 
     header img {
         width: 70px !important;
     }
 
-    /* Smaller absolute buttons on mobile */
+    /* Smaller buttons on mobile */
     header div button, 
     .header-auth .login-btn {
         padding: 6px 10px !important;
