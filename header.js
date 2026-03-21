@@ -4,20 +4,23 @@
     document.documentElement.setAttribute('data-theme', savedTheme);
 
     const headerHTML = `
-    <header style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; min-height: 180px; position: relative;">
-        <div style="position: absolute; left: 35px; top: 20px; z-index: 10; display: flex; gap: 10px; align-items: center;">
-            <button onclick="toggleDevModal && toggleDevModal()" style="background:var(--primary-color); border:none; padding:8px 15px; border-radius:5px; color:#000; font-weight:bold; cursor:pointer; font-family:'Outfit', sans-serif; box-shadow: 0 0 10px rgba(0,0,0,0.5);">Meet the Developer</button>
-            <button id="themeToggleBtn" onclick="toggleTheme()" class="theme-toggle-btn" title="Toggle Dark/Light Mode">🌙</button>
+    <header style="display: flex; flex-direction: column; align-items: center; position: relative; padding: 20px 0; min-height: 180px;">
+        <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start; padding: 0 20px 0 35px; box-sizing: border-box; z-index: 10; flex-wrap: wrap; gap: 15px;">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <button onclick="toggleDevModal && toggleDevModal()" style="background:var(--primary-color); border:none; padding:8px 15px; border-radius:5px; color:#000; font-weight:bold; cursor:pointer; font-family:'Outfit', sans-serif; box-shadow: 0 0 10px rgba(0,0,0,0.5);">Meet the Developer</button>
+                <button id="themeToggleBtn" onclick="toggleTheme()" class="theme-toggle-btn" title="Toggle Dark/Light Mode">🌙</button>
+            </div>
+            <div class="header-auth" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: flex-end;">
+                <button id="headerLoginBtn" class="login-btn" style="padding: 8px 16px; width: auto; margin: 0;">Login</button>
+            </div>
         </div>
         
-        <h2 style="margin: 0; order: 1; letter-spacing: 2px; font-size: 1.8rem; text-transform: uppercase; color: var(--primary-color); z-index: 5;">Shotokan  Karate  Academy</h2>
-        
-        <a href="index.html" style="order: 2; z-index: 5;">
-            <img src="img/logo.jpeg" alt="Shotokan Karate Academy Logo" style="width: 90px;">
-        </a>
-        
-        <div class="header-auth" style="position: absolute; right: 35px; top: 20px; z-index: 10;">
-            <button id="headerLoginBtn" class="login-btn" style="padding: 8px 16px; width: auto;">Login</button>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; z-index: 5;">
+            <h2 style="margin: 0; letter-spacing: 2px; font-size: clamp(1.2rem, 4vw, 1.8rem); text-transform: uppercase; color: var(--primary-color); text-align: center; padding: 0 10px;">Shotokan Karate Academy</h2>
+            
+            <a href="index.html">
+                <img src="img/logo.jpeg" alt="Shotokan Karate Academy Logo" style="width: 90px; transition: transform 0.3s ease;">
+            </a>
         </div>
     </header>
 
@@ -124,7 +127,7 @@
 
                     let adminLinkHTML = "";
                     if (data.user.username === 'admin') {
-                        adminLinkHTML = `<a href="admin.html" style="color:var(--primary-color); font-weight:bold; margin-right:15px; text-decoration:none;">ADMIN</a>`;
+                        adminLinkHTML = `<a href="admin.html" style="color:var(--primary-color); font-weight:bold; text-decoration:none;">ADMIN</a>`;
                     }
 
                     loginBtn.parentElement.innerHTML = `
